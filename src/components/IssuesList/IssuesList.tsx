@@ -16,6 +16,8 @@ export const IssuesList: React.FC<Props> = ({
   title,
 }) => {
 
+  console.log(issues);
+
   if (!issues.length) {
     return null;
   }

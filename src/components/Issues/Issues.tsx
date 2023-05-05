@@ -9,8 +9,9 @@ export const Issues: React.FC = () => {
   const dispatch = useAppDispatch();
   const { todos, inProgress, closed, hasError } = useAppSelector(state => state.issues);
   const { url } = useAppSelector(state => state.url);
+  console.log(hasError);
 
-  const urlError = !url.includes('github.com');
+  const urlError = !url.toLowerCase().includes('github.com');
 
   if (urlError && url) {
     return (
@@ -18,7 +19,7 @@ export const Issues: React.FC = () => {
     );
   }
 
-  if ((hasError) && url) {
+  if (hasError && url) {
     return (
       <div>Error fetching issues</div>
     );
@@ -36,7 +37,7 @@ export const Issues: React.FC = () => {
       return;
     }
 
-    dispatch(issuesActions.reorderIssues(result));
+    dispatch(issuesActions.manageIssues(result));
   };
 
   return (
@@ -45,9 +46,9 @@ export const Issues: React.FC = () => {
         <DragDropContext
           onDragEnd={handleOnDragEnd}
         >
-          <IssuesList title="Todo" issues={todos} droppableId="todo" />
-          <IssuesList title="In Progress" issues={inProgress} droppableId="inProgress" />
-          <IssuesList title="Closed" issues={closed} droppableId="closed" />
+          <IssuesList title="Todo" issues={todos} droppableId="Todo" />
+          <IssuesList title="In Progress" issues={inProgress} droppableId="InProgress" />
+          <IssuesList title="Closed" issues={closed} droppableId="Closed" />
         </DragDropContext>
       </div>
     </>

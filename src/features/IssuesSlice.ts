@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Issue } from '../types/Issue';
 import { getClosedIssues, getRepoInfo, getRepoIssues, getRepoIssuesWithAsignee } from '../api/getIssues';
-import { DropResult } from 'react-beautiful-dnd';
 
 type IssuesState = {
   todos: Issue[];
@@ -38,18 +37,25 @@ export const fetchIssues = createAsyncThunk(
       getClosedIssues(url)
     ]);
 
-    const localStorageKey = url;
+    const localStorageKey = `${owner}/${repo}`;
+    let data;
+
+    const parsedData = localStorage.getItem(localStorageKey);
     
-    const data = {
-      todos,
-      inProgress,
-      closed,
-      owner,
-      repo,
-      stars: repoInfo.stargazers_count,
-    };
-    
-    localStorage.setItem(localStorageKey, JSON.stringify(data));
+    if (parsedData) {
+      data = JSON.parse(parsedData);
+    } else {
+      data = {
+        todos,
+        inProgress,
+        closed,
+        owner,
+        repo,
+        stars: repoInfo.stargazers_count,
+      };
+
+      localStorage.setItem(localStorageKey, JSON.stringify(data));
+    }
     
     return data;
   }
@@ -59,10 +65,10 @@ const issuesSlice = createSlice({
   name: 'issues',
   initialState,
   reducers: {
-    reorderIssues: (state, action: PayloadAction<DropResult>) => {
+    manageIssues: (state, action) => {
       const { source, destination } = action.payload;
 
-      const findIssuesArray = (droppableId: string): Issue[] => {
+      const getDroppableList = (droppableId: string): Issue[] => {
         const checkId = droppableId.toLowerCase();
 
         switch (checkId) {
@@ -77,12 +83,8 @@ const issuesSlice = createSlice({
         }
       };
 
-      if (!destination) {
-        return;
-      }
-
-      const sourceIssues = findIssuesArray(source.droppableId);
-      const destinationIssues = findIssuesArray(destination.droppableId);
+      const sourceIssues = getDroppableList(source.droppableId);
+      const destinationIssues = getDroppableList(destination.droppableId);
 
       const [removed] = sourceIssues.splice(source.index, 1);
       destinationIssues.splice(destination.index, 0, removed);
@@ -90,9 +92,9 @@ const issuesSlice = createSlice({
       const localStorageKey = `${state.owner}/${state.repo}`;
 
       const data = {
-        todo: state.todos,
+        todos: state.todos,
         inProgress: state.inProgress,
-        done: state.closed,
+        closed: state.closed,
         owner: state.owner,
         repo: state.repo,
         stars: state.stars,
@@ -122,8 +124,5 @@ const issuesSlice = createSlice({
   },
 });
 
-
-
-export const { reorderIssues } = issuesSlice.actions;
-
+export const { manageIssues } = issuesSlice.actions;
 export default issuesSlice.reducer;

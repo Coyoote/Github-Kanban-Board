@@ -20,11 +20,11 @@ export const BreadCrumbs: React.FC = () => {
     }
   ];
 
+  const starCount = Math.round(stars / 10) / 100;
+
   if (!owner || !repo) {
     return null;
   }
-
-  const starCount = Math.round(stars / 10) / 100;
 
   return (
     <div className={styles.container}>
@@ -33,7 +33,7 @@ export const BreadCrumbs: React.FC = () => {
         items={breadCrumbsItems}
       />
       <div className={styles.stars}>
-        <StarFilled style={{ color: 'yellow', marginRight: '5px'}} />
+        <StarFilled style={{ color: 'yellow', marginRight: '5px' }} />
         <p>{starCount} K stars</p>
       </div>
     </div>

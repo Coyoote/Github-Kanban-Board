@@ -4,25 +4,25 @@ import { Input } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import * as issuesActions from '../../features/IssuesSlice';
 import * as urlActions from '../../features/URLSlice';
+import { isUrlValid } from '../../utils/isUrlValid';
 const { Search } = Input;
 
 export const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { url } = useAppSelector(state => state.url);
-  const { hasError } = useAppSelector(state => state.issues);
+  const { loading } = useAppSelector(state => state.issues);
+
+  const urlError = isUrlValid(url) ? '' : 'error';
+
+  const onSearch = () => {
+    const urlQuery = url.split('/').slice(3, 5).join('/');
+    dispatch(issuesActions.fetchIssues(urlQuery));
+  };
 
   const setUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(urlActions.set(event.target.value));
   };
 
-  const onSearch = () => {
-    if (url) {
-      const urlQuery = url.split('/').slice(3, 5).join('/');
-      dispatch(issuesActions.fetchIssues(urlQuery));
-    }
-  };
-
-  const urlError = url && hasError ? 'error' : '';
 
   return (
     <div className={styles.container}>
@@ -34,6 +34,7 @@ export const SearchBar: React.FC = () => {
         onChange={setUrl}
         onSearch={onSearch}
         status={urlError}
+        disabled={loading}
       />
     </div>
   );
