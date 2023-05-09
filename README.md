@@ -10,7 +10,7 @@ With this application, users can monitor issues for their GitHub repository by l
 * Run `npm install`
 * Run `npm start`
 * Enter the URL of a GitHub repository in the input bar and click "Load issues"
-(Example: https://github.com/facebook/react)
+* (Example: https://github.com/facebook/react)
 * Drag and drop the issues of the GitHub repository to your liking!
   
 ## Technologies
