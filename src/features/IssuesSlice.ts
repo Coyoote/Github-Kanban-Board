@@ -42,7 +42,7 @@ export const fetchIssues = createAsyncThunk(
       const todos = await getRepoIssues(url);
       const inProgress = await getRepoIssuesWithAsignee(url);
       const closed = await getClosedIssues(url);
-      
+
       data = {
         todos,
         inProgress,
@@ -104,6 +104,7 @@ const issuesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchIssues.pending, (state) => {
+        state.hasError = false;
         state.loading = true;
       })
       .addCase(fetchIssues.fulfilled, (state, action) => {
@@ -114,6 +115,7 @@ const issuesSlice = createSlice({
         state.repo = action.payload.repo;
         state.stars = action.payload.stars;
         state.loading = false;
+        state.hasError = false;
       })
       .addCase(fetchIssues.rejected, (state) => {
         state.loading = false;
