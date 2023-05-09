@@ -26,38 +26,40 @@ const initialState: IssuesState = {
 
 export const fetchIssues = createAsyncThunk(
   'issues/fetch',
-  async (url: string) => {
+  async (url: string, { rejectWithValue }) => {
     const owner = url.split('/')[0];
     const repo = url.split('/')[1];
 
-    const [repoInfo, todos, inProgress, closed] = await Promise.all([
-      getRepoInfo(url),
-      getRepoIssues(url),
-      getRepoIssuesWithAsignee(url),
-      getClosedIssues(url)
-    ]);
+    try {
+      const repoInfo = await getRepoInfo(url);
+      const todos = await getRepoIssues(url);
+      const inProgress = await getRepoIssuesWithAsignee(url);
+      const closed = await getClosedIssues(url);
 
-    const localStorageKey = `${owner}/${repo}`;
-    let data;
+      const localStorageKey = `${owner}/${repo}`;
+      let data;
 
-    const parsedData = localStorage.getItem(localStorageKey);
+      const parsedData = localStorage.getItem(localStorageKey);
     
-    if (parsedData) {
-      data = JSON.parse(parsedData);
-    } else {
-      data = {
-        todos,
-        inProgress,
-        closed,
-        owner,
-        repo,
-        stars: repoInfo.stargazers_count,
-      };
+      if (parsedData) {
+        data = JSON.parse(parsedData);
+      } else {
+        data = {
+          todos,
+          inProgress,
+          closed,
+          owner,
+          repo,
+          stars: repoInfo.stargazers_count,
+        };
 
-      localStorage.setItem(localStorageKey, JSON.stringify(data));
+        localStorage.setItem(localStorageKey, JSON.stringify(data));
+      }
+    
+      return data;
+    } catch (error) {
+      rejectWithValue({ hasError: true });
     }
-    
-    return data;
   }
 );
 
