@@ -12,6 +12,9 @@ async function request<T>(url: string, method = 'GET', data: any = null): Promis
 
   try {
     const response = await fetch(BASE_URL + url, options);
+    if (response.status === 403) {
+      throw new Error('API request limit exceeded');
+    }
     if (!response.ok) {
       throw new Error('Cannot fetch issues');
     }
