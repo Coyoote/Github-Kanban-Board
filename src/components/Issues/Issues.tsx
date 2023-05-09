@@ -9,19 +9,10 @@ export const Issues: React.FC = () => {
   const dispatch = useAppDispatch();
   const { todos, inProgress, closed, hasError } = useAppSelector(state => state.issues);
   const { url } = useAppSelector(state => state.url);
-  console.log(hasError);
 
-  const urlError = !url.toLowerCase().includes('github.com');
-
-  if (urlError && url) {
+  if (url && hasError) {
     return (
       <div>Invalid URL</div>
-    );
-  }
-
-  if (hasError && url) {
-    return (
-      <div>Error fetching issues</div>
     );
   }
 
