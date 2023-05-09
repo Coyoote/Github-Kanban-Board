@@ -1,6 +1,6 @@
 const BASE_URL = 'https://api.github.com';
 
-async function request<T>(url: string, method = 'GET', data: any = null): Promise<T> {
+async function request<T>(url: string, method = 'GET', data: unknown = null): Promise<T> {
   const options: RequestInit = { method };
 
   if (data) {

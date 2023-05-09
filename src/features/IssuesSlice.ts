@@ -30,11 +30,6 @@ export const fetchIssues = createAsyncThunk(
     const owner = url.split('/')[0];
     const repo = url.split('/')[1];
 
-    const repoInfo = await getRepoInfo(url);
-    const todos = await getRepoIssues(url);
-    const inProgress = await getRepoIssuesWithAsignee(url);
-    const closed = await getClosedIssues(url);
-
     const localStorageKey = `${owner}/${repo}`;
     let data;
 
@@ -43,6 +38,11 @@ export const fetchIssues = createAsyncThunk(
     if (parsedData) {
       data = JSON.parse(parsedData);
     } else {
+      const repoInfo = await getRepoInfo(url);
+      const todos = await getRepoIssues(url);
+      const inProgress = await getRepoIssuesWithAsignee(url);
+      const closed = await getClosedIssues(url);
+      
       data = {
         todos,
         inProgress,

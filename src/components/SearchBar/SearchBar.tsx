@@ -15,8 +15,10 @@ export const SearchBar: React.FC = () => {
   const urlError = isUrlValid(url) && url ? '' : 'error';
 
   const onSearch = () => {
-    const urlQuery = url.split('/').slice(3, 5).join('/');
-    dispatch(issuesActions.fetchIssues(urlQuery));
+    if (isUrlValid(url) && url) {
+      const urlQuery = url.split('/').slice(3, 5).join('/');
+      dispatch(issuesActions.fetchIssues(urlQuery));
+    }
   };
 
   const setUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
