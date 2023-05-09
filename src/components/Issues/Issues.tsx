@@ -3,6 +3,7 @@ import styles from './Issues.module.scss';
 import { IssuesList } from '../IssuesList';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { isUrlValid } from '../../utils/isUrlValid';
 import * as issuesActions from '../../features/IssuesSlice';
 
 export const Issues: React.FC = () => {
@@ -10,9 +11,17 @@ export const Issues: React.FC = () => {
   const { todos, inProgress, closed, hasError } = useAppSelector(state => state.issues);
   const { url } = useAppSelector(state => state.url);
 
-  if (url && hasError) {
+  const urlError = !isUrlValid(url);
+
+  if (urlError && url) {
     return (
       <div>Invalid URL</div>
+    );
+  }
+
+  if (url && hasError) {
+    return (
+      <div>Error fetching issues</div>
     );
   }
 
