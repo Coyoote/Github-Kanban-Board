@@ -12,7 +12,7 @@ export const SearchBar: React.FC = () => {
   const { url } = useAppSelector(state => state.url);
   const { loading } = useAppSelector(state => state.issues);
 
-  const urlError = isUrlValid(url) && url ? '' : 'error';
+  const urlError = isUrlValid(url) || !url ? '' : 'error';
 
   const onSearch = () => {
     if (isUrlValid(url) && url) {
